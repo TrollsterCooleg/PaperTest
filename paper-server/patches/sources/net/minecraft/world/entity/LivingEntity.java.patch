@@ -62,11 +62,12 @@
  
      protected LivingEntity(EntityType<? extends LivingEntity> entityType, Level level) {
          super(entityType, level);
-         this.attributes = new AttributeMap(DefaultAttributes.getSupplier(entityType));
+-        this.attributes = new AttributeMap(DefaultAttributes.getSupplier(entityType));
 -        this.setHealth(this.getMaxHealth());
++        this.attributes = new AttributeMap(DefaultAttributes.getSupplier(entityType), this); // Paper - Update attributes related to equipment in case changes were made
 +        this.craftAttributes = new CraftAttributeMap(this.attributes); // CraftBukkit
 +        // CraftBukkit - this.setHealth(this.getMaxHealth()) inlined and simplified to skip the instanceof check for Player, as getBukkitEntity() is not initialized in constructor
-+        this.entityData.set(LivingEntity.DATA_HEALTH_ID, this.getMaxHealth());
++        this.entityData.set(LivingEntity.DATA_HEALTH_ID, (float)this.getAttribute(Attributes.MAX_HEALTH).getValue());
          this.blocksBuilding = true;
          this.rotA = (float)((Math.random() + 1.0) * 0.01F);
          this.reapplyPosition();
@@ -94,6 +95,15 @@
          }
      }
  
+@@ -582,7 +_,7 @@
+         AttributeInstance attribute = this.getAttribute(Attributes.OXYGEN_BONUS);
+         double value;
+         if (attribute != null) {
+-            value = attribute.getValue();
++            value = attribute.getValue(this); // Paper - Update attributes related to equipment in case changes were made
+         } else {
+             value = 0.0;
+         }
 @@ -658,7 +_,7 @@
      }
  

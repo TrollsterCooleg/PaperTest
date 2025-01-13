@@ -1,5 +1,30 @@
 --- a/net/minecraft/world/entity/ai/attributes/AttributeMap.java
 +++ b/net/minecraft/world/entity/ai/attributes/AttributeMap.java
+@@ -23,10 +_,14 @@
+     private final Set<AttributeInstance> attributesToSync = new ObjectOpenHashSet<>();
+     private final Set<AttributeInstance> attributesToUpdate = new ObjectOpenHashSet<>();
+     private final AttributeSupplier supplier;
++    // Paper start - Update attributes related to equipment in case changes were made
++    private final net.minecraft.world.entity.LivingEntity entity;
+ 
+-    public AttributeMap(AttributeSupplier supplier) {
++    public AttributeMap(net.minecraft.world.entity.ai.attributes.AttributeSupplier supplier, final net.minecraft.world.entity.LivingEntity livingEntity) {
+         this.supplier = supplier;
++        this.entity = livingEntity;
+     }
++    // Paper end - Update attributes related to equipment in case changes were made
+ 
+     private void onAttributeModified(AttributeInstance instance) {
+         this.attributesToUpdate.add(instance);
+@@ -63,7 +_,7 @@
+ 
+     public double getValue(Holder<Attribute> attribute) {
+         AttributeInstance attributeInstance = this.attributes.get(attribute);
+-        return attributeInstance != null ? attributeInstance.getValue() : this.supplier.getValue(attribute);
++        return attributeInstance != null ? attributeInstance.getValue(entity) : this.supplier.getValue(attribute, entity); // Paper - Update attributes related to equipment in case changes were made
+     }
+ 
+     public double getBaseValue(Holder<Attribute> attribute) {
 @@ -162,4 +_,12 @@
              }
          }

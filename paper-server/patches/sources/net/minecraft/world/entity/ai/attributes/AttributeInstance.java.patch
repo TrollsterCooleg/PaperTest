@@ -1,6 +1,17 @@
 --- a/net/minecraft/world/entity/ai/attributes/AttributeInstance.java
 +++ b/net/minecraft/world/entity/ai/attributes/AttributeInstance.java
-@@ -153,20 +_,20 @@
+@@ -149,24 +_,31 @@
+         return this.cachedValue;
+     }
+ 
++    // Paper start - Update attributes related to equipment in case changes were made
++    public double getValue(net.minecraft.world.entity.LivingEntity entity) {
++        entity.detectEquipmentUpdatesPublic();
++        return getValue();
++    }
++    // Paper end - Update attributes related to equipment in case changes were made
++
+     private double calculateValue() {
          double baseValue = this.getBaseValue();
  
          for (AttributeModifier attributeModifier : this.getModifiersOrEmpty(AttributeModifier.Operation.ADD_VALUE)) {

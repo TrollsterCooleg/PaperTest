@@ -131,6 +131,15 @@
          if (!droppedItem.isEmpty() && this.level().isClientSide) {
              this.swing(InteractionHand.MAIN_HAND);
          }
+@@ -746,7 +_,7 @@
+ 
+         destroySpeed *= (float)this.getAttributeValue(Attributes.BLOCK_BREAK_SPEED);
+         if (this.isEyeInFluid(FluidTags.WATER)) {
+-            destroySpeed *= (float)this.getAttribute(Attributes.SUBMERGED_MINING_SPEED).getValue();
++            destroySpeed *= (float)this.getAttribute(Attributes.SUBMERGED_MINING_SPEED).getValue(this); // Paper - Update attributes related to equipment in case changes were made
+         }
+ 
+         if (!this.onGround()) {
 @@ -867,10 +_,10 @@
              if (this.isDeadOrDying()) {
                  return false;
@@ -643,6 +652,24 @@
      }
  
      @Override
+@@ -1946,6 +_,17 @@
+     }
+ 
+     public float getAttackStrengthScale(float adjustTicks) {
++        // Paper start - Update attributes related to equipment in case changes were made
++        ItemStack mainHandItem = this.getMainHandItem();
++        if (!ItemStack.matches(this.lastItemInMainHand, this.getMainHandItem())) {
++            if (!ItemStack.isSameItem(this.lastItemInMainHand, mainHandItem)) {
++                this.resetAttackStrengthTicker();
++            }
++
++            this.lastItemInMainHand = mainHandItem.copy();
++        }
++        // Paper end - Update attributes related to equipment in case changes were made
++
+         return Mth.clamp((this.attackStrengthTicker + adjustTicks) / this.getCurrentItemAttackStrengthDelay(), 0.0F, 1.0F);
+     }
+ 
 @@ -1988,17 +_,28 @@
          return ImmutableList.of(Pose.STANDING, Pose.CROUCHING, Pose.SWIMMING);
      }

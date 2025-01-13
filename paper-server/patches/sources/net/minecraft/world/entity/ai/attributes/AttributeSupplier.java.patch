@@ -1,0 +1,16 @@
+--- a/net/minecraft/world/entity/ai/attributes/AttributeSupplier.java
++++ b/net/minecraft/world/entity/ai/attributes/AttributeSupplier.java
+@@ -23,9 +_,11 @@
+         }
+     }
+ 
+-    public double getValue(Holder<Attribute> attribute) {
+-        return this.getAttributeInstance(attribute).getValue();
++    // Paper start - Update attributes related to equipment in case changes were made
++    public double getValue(Holder<Attribute> attribute, net.minecraft.world.entity.LivingEntity entity) {
++        return this.getAttributeInstance(attribute).getValue(entity);
+     }
++    // Paper end - Update attributes related to equipment in case changes were made
+ 
+     public double getBaseValue(Holder<Attribute> attribute) {
+         return this.getAttributeInstance(attribute).getBaseValue();
